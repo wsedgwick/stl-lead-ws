@@ -1,0 +1,53 @@
+---
+title: "stl_lead_inequity"
+format: html
+editor: visual
+---
+
+```{r}
+
+library(tidyverse)
+library(janitor)
+
+
+stl_lead <- read_csv(here::here("data",
+                                "stl_blood_lead.csv"))
+
+stl_lead <- stl_lead %>% clean_names()
+
+stl_lead
+
+
+stl_lead_prop <- stl_lead %>%
+  dplyr::mutate(prop_white = white / total_pop * 100)
+
+stl_lead_prop
+
+
+stl_lead_plot <- ggplot(data = stl_lead_prop, aes(x = prop_white,
+                                                  y = pct_elevated)) +
+  geom_point(size = 2,
+             color = "blue",
+             alpha = 0.5)
+
+stl_lead_plot
+
+ggsave(plot = stl_lead_plot,
+       here::here("figs", "stl_lead_plot.png"),
+       width = 6,
+       height = 5)
+
+# There is a general negative correlation between percentage of white people in this population and percentage of those with more lead
+
+stl_lead_hist <- ggplot(data = stl_lead_prop, aes(x = pct_elevated)) +
+  geom_histogram(color = "red",
+                 alpha = 0.8,
+                 binwidth = 0.5)
+
+stl_lead_hist
+
+ggsave(plot = stl_lead_hist,
+       here::here("figs", "lead_histogram.png"))
+
+
+```
